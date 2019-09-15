@@ -1,0 +1,10 @@
+br\com\alelo\model\bean\Projects.class
+br\com\alelo\bd\connection.class
+br\com\alelo\view\ProjectsRegistration$2.class
+br\com\alelo\view\ProjectsRegistration$4.class
+br\com\alelo\model\dao\FeaturesDao.class
+br\com\alelo\model\dao\ProjectsDao.class
+br\com\alelo\view\ProjectsRegistration$3.class
+br\com\alelo\view\ProjectsRegistration$1.class
+br\com\alelo\model\bean\Features.class
+br\com\alelo\view\ProjectsRegistration.class
