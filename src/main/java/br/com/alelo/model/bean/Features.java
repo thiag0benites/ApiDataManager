@@ -14,10 +14,10 @@ public class Features {
     private String name;
     private int projId;
 
-    public Features(String name, int projId) {
-        this.name = name;
-        this.projId = projId;
-    }
+//    public Features(String name, int projId) {
+//        this.name = name;
+//        this.projId = projId;
+//    }
 
     public String getName() {
         return name;

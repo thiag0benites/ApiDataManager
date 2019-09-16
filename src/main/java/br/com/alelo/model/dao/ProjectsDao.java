@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * CRUD
@@ -46,7 +48,37 @@ public class ProjectsDao {
         
     } 
     
-    private void getCurrentProjectId(Projects project){
+    public List<Projects> getAll(){
+        
+        String sql = "SELECT * FROM projects";
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Projects> projects = new ArrayList<>();
+        
+        try {
+            
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            
+            while (rs.next())
+            {
+                Projects project = new Projects();
+                project.setId(rs.getInt("proj_id"));
+                project.setAuthor(rs.getString("proj_author"));
+                project.setName(rs.getString("proj_name"));
+                projects.add(project);
+            }
+                
+        } catch (SQLException ex) {
+            System.err.println("Não foi possível obter a lista de projetos");
+        } finally {
+            connection.closeConnection(conn, stmt, rs);
+        }
+        
+        return projects;
+    }
+    
+    public void getCurrentProjectId(Projects project){
         
         String sql = "SELECT * FROM projects WHERE proj_name = ?";
         PreparedStatement stmt = null;

@@ -10,12 +10,15 @@ import br.com.alelo.model.bean.Features;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * CRUD
  * @author atomic
  */
-public class FeaturesDao {
+public class FeaturesDao{
     
     private Connection conn = null;
 
@@ -23,7 +26,7 @@ public class FeaturesDao {
         conn = connection.getConnection();
     }
     
-    public boolean feature(Features feature){
+    public boolean AddFeature(Features feature){
         
         String sql = "INSERT INTO features (feature_name, proj_id) VALUES (?, ?)";
         PreparedStatement stmt = null;
@@ -43,5 +46,33 @@ public class FeaturesDao {
             connection.closeConnection(conn, stmt);
         }       
         
+    }
+    
+    public List<Features> getAll(){
+        
+        String sql = "SELECT * FROM features";
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Features> features = new ArrayList<>();
+        
+        try {
+            
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            
+            while (rs.next())
+            {
+                Features feature = new Features();
+                feature.setName(rs.getString("feature_name"));
+                features.add(feature);
+            }
+                
+        } catch (SQLException ex) {
+            System.err.println("Não foi possível obter a lista de funcionalidades");
+        } finally {
+            connection.closeConnection(conn, stmt, rs);
+        }
+        
+        return features;
     }
 }

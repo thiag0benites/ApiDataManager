@@ -5,8 +5,13 @@
  */
 package br.com.alelo.view;
 
+import br.com.alelo.model.bean.Features;
 import br.com.alelo.model.bean.Projects;
+import br.com.alelo.model.dao.FeaturesDao;
 import br.com.alelo.model.dao.ProjectsDao;
+import java.awt.Component;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 /**
@@ -15,13 +20,16 @@ import javax.swing.JOptionPane;
  */
 public class ProjectsRegistration extends javax.swing.JFrame {
 
+    private DefaultListModel dm = new DefaultListModel();
     /**
      * Creates new form ProjectsRegistration
      */
     public ProjectsRegistration() {
         initComponents();
         //this.setExtendedState(MAXIMIZED_BOTH);
-        intFormCadastrarProjeto.setVisible(false);
+//        intFrmCadProjeto.setVisible(false);
+//        intFrmCadFeature.setVisible(false);
+        //intFrmList.setVisible(false);
     }
 
     /**
@@ -37,18 +45,34 @@ public class ProjectsRegistration extends javax.swing.JFrame {
         btnNovoProjeto = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         jDesktopPane1 = new javax.swing.JDesktopPane();
-        intFormCadastrarProjeto = new javax.swing.JInternalFrame();
-        jPanel1 = new javax.swing.JPanel();
-        btnLimpar = new javax.swing.JButton();
-        btnCadastrar2 = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        txtAutor = new javax.swing.JTextField();
+        intFrmList = new javax.swing.JInternalFrame();
+        pnlProjetoFunc = new javax.swing.JPanel();
+        pnlProjList = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        listProjetos = new javax.swing.JList<>();
+        pnlNovoProjeto = new javax.swing.JPanel();
         txtProjeto = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        txtAutor = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        btnLimparProjeto = new javax.swing.JButton();
+        btnCriarProjeto = new javax.swing.JButton();
+        pnlFuncList = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        listFunc = new javax.swing.JList<>();
+        pnlNovaFuncionalidade = new javax.swing.JPanel();
+        txtFuncionalidade = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
+        btnCriarFunc = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Gerenciador de Dados Teste API");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowActivated(java.awt.event.WindowEvent evt) {
+                formWindowActivated(evt);
+            }
+        });
 
         pnlMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         pnlMenu.setName(""); // NOI18N
@@ -71,83 +95,262 @@ public class ProjectsRegistration extends javax.swing.JFrame {
 
         jDesktopPane1.setBackground(new java.awt.Color(204, 204, 255));
 
-        intFormCadastrarProjeto.setClosable(true);
-        intFormCadastrarProjeto.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-        intFormCadastrarProjeto.setTitle("Novo Projeto");
-        intFormCadastrarProjeto.setVisible(true);
-
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        btnLimpar.setText("Limpar");
-        btnLimpar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLimparActionPerformed(evt);
+        intFrmList.setClosable(true);
+        intFrmList.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        intFrmList.setTitle("Projetos x Funcionalidades");
+        intFrmList.setVisible(true);
+        intFrmList.addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+                intFrmListInternalFrameActivated(evt);
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                intFrmListInternalFrameOpened(evt);
             }
         });
-        jPanel1.add(btnLimpar, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 110, 102, 34));
-
-        btnCadastrar2.setText("Cadastrar");
-        btnCadastrar2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCadastrar2ActionPerformed(evt);
+        intFrmList.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                intFrmListComponentShown(evt);
             }
         });
-        jPanel1.add(btnCadastrar2, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 110, 100, 34));
+        intFrmList.getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Dados Projeto"));
+        pnlProjList.setBorder(javax.swing.BorderFactory.createTitledBorder("Projetos\n"));
 
-        jLabel1.setText("Autor");
+        listProjetos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane2.setViewportView(listProjetos);
 
-        jLabel2.setText("Projeto");
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnlProjListLayout = new javax.swing.GroupLayout(pnlProjList);
+        pnlProjList.setLayout(pnlProjListLayout);
+        pnlProjListLayout.setHorizontalGroup(
+            pnlProjListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlProjListLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(27, 27, 27)
-                        .addComponent(txtAutor))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(19, 19, 19)
-                        .addComponent(txtProjeto, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        pnlProjListLayout.setVerticalGroup(
+            pnlProjListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlProjListLayout.createSequentialGroup()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 7, Short.MAX_VALUE))
+        );
+
+        pnlNovoProjeto.setBorder(javax.swing.BorderFactory.createTitledBorder("Novo Projeto"));
+
+        txtProjeto.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtProjetoFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtProjetoFocusLost(evt);
+            }
+        });
+        txtProjeto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtProjetoKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtProjetoKeyReleased(evt);
+            }
+        });
+
+        jLabel1.setText("Projeto");
+
+        txtAutor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtAutorFocusLost(evt);
+            }
+        });
+        txtAutor.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtAutorKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtAutorKeyReleased(evt);
+            }
+        });
+
+        jLabel2.setText("Autor");
+
+        btnLimparProjeto.setText("Limpar");
+        btnLimparProjeto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimparProjetoActionPerformed(evt);
+            }
+        });
+
+        btnCriarProjeto.setText("Criar");
+        btnCriarProjeto.setEnabled(false);
+        btnCriarProjeto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCriarProjetoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlNovoProjetoLayout = new javax.swing.GroupLayout(pnlNovoProjeto);
+        pnlNovoProjeto.setLayout(pnlNovoProjetoLayout);
+        pnlNovoProjetoLayout.setHorizontalGroup(
+            pnlNovoProjetoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlNovoProjetoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(9, 9, 9)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtProjeto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(pnlNovoProjetoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlNovoProjetoLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnLimparProjeto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnCriarProjeto))
+                    .addGroup(pnlNovoProjetoLayout.createSequentialGroup()
+                        .addGroup(pnlNovoProjetoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlNovoProjetoLayout.createSequentialGroup()
+                                .addComponent(jLabel2)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtAutor, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pnlNovoProjetoLayout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtProjeto, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        pnlNovoProjetoLayout.setVerticalGroup(
+            pnlNovoProjetoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlNovoProjetoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlNovoProjetoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtAutor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlNovoProjetoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtProjeto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlNovoProjetoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnCriarProjeto)
+                    .addComponent(btnLimparProjeto))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel1.add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 340, 90));
+        pnlFuncList.setBorder(javax.swing.BorderFactory.createTitledBorder("Funcionalidades"));
 
-        javax.swing.GroupLayout intFormCadastrarProjetoLayout = new javax.swing.GroupLayout(intFormCadastrarProjeto.getContentPane());
-        intFormCadastrarProjeto.getContentPane().setLayout(intFormCadastrarProjetoLayout);
-        intFormCadastrarProjetoLayout.setHorizontalGroup(
-            intFormCadastrarProjetoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
+        jScrollPane4.setViewportView(listFunc);
+
+        javax.swing.GroupLayout pnlFuncListLayout = new javax.swing.GroupLayout(pnlFuncList);
+        pnlFuncList.setLayout(pnlFuncListLayout);
+        pnlFuncListLayout.setHorizontalGroup(
+            pnlFuncListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlFuncListLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
-        intFormCadastrarProjetoLayout.setVerticalGroup(
-            intFormCadastrarProjetoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(intFormCadastrarProjetoLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 4, Short.MAX_VALUE))
+        pnlFuncListLayout.setVerticalGroup(
+            pnlFuncListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlFuncListLayout.createSequentialGroup()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 7, Short.MAX_VALUE))
         );
 
-        jDesktopPane1.add(intFormCadastrarProjeto);
-        intFormCadastrarProjeto.setBounds(79, 82, 380, 190);
+        pnlNovaFuncionalidade.setBorder(javax.swing.BorderFactory.createTitledBorder("Nova Funcionalidade"));
+
+        txtFuncionalidade.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtFuncionalidadeKeyReleased(evt);
+            }
+        });
+
+        jLabel5.setText("Funcionalidade");
+
+        btnCriarFunc.setText("Criar");
+        btnCriarFunc.setEnabled(false);
+        btnCriarFunc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCriarFuncActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlNovaFuncionalidadeLayout = new javax.swing.GroupLayout(pnlNovaFuncionalidade);
+        pnlNovaFuncionalidade.setLayout(pnlNovaFuncionalidadeLayout);
+        pnlNovaFuncionalidadeLayout.setHorizontalGroup(
+            pnlNovaFuncionalidadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlNovaFuncionalidadeLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnlNovaFuncionalidadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnCriarFunc, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlNovaFuncionalidadeLayout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtFuncionalidade, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        pnlNovaFuncionalidadeLayout.setVerticalGroup(
+            pnlNovaFuncionalidadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlNovaFuncionalidadeLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnlNovaFuncionalidadeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtFuncionalidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addGap(34, 34, 34)
+                .addComponent(btnCriarFunc)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlProjetoFuncLayout = new javax.swing.GroupLayout(pnlProjetoFunc);
+        pnlProjetoFunc.setLayout(pnlProjetoFuncLayout);
+        pnlProjetoFuncLayout.setHorizontalGroup(
+            pnlProjetoFuncLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlProjetoFuncLayout.createSequentialGroup()
+                .addGroup(pnlProjetoFuncLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlProjetoFuncLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(pnlProjetoFuncLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(pnlNovoProjeto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pnlProjList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(pnlProjetoFuncLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(pnlFuncList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pnlNovaFuncionalidade, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(pnlProjetoFuncLayout.createSequentialGroup()
+                        .addGap(161, 161, 161)
+                        .addComponent(jButton1)))
+                .addGap(0, 11, Short.MAX_VALUE))
+        );
+        pnlProjetoFuncLayout.setVerticalGroup(
+            pnlProjetoFuncLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlProjetoFuncLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addGroup(pnlProjetoFuncLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(pnlNovoProjeto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlNovaFuncionalidade, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnlProjetoFuncLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlProjList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(pnlFuncList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addContainerGap(38, Short.MAX_VALUE))
+        );
+
+        intFrmList.getContentPane().add(pnlProjetoFunc, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 500, 440));
+
+        jDesktopPane1.add(intFrmList);
+        intFrmList.setBounds(20, 10, 510, 470);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -167,50 +370,211 @@ public class ProjectsRegistration extends javax.swing.JFrame {
         setBounds(0, 0, 858, 566);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
+    private void btnNovoProjetoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoProjetoActionPerformed
+    
+    }//GEN-LAST:event_btnNovoProjetoActionPerformed
+
+    private void intFrmListInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_intFrmListInternalFrameActivated
+
+    }//GEN-LAST:event_intFrmListInternalFrameActivated
+
+    private void btnLimparProjetoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparProjetoActionPerformed
+        clearProjectFields();
+    }//GEN-LAST:event_btnLimparProjetoActionPerformed
+
+    private void btnCriarProjetoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriarProjetoActionPerformed
+        addNewProject();
+    }//GEN-LAST:event_btnCriarProjetoActionPerformed
+
+    private void intFrmListInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_intFrmListInternalFrameOpened
+        
+    }//GEN-LAST:event_intFrmListInternalFrameOpened
+
+    private void txtAutorFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtAutorFocusLost
+
+    }//GEN-LAST:event_txtAutorFocusLost
+
+    private void txtProjetoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtProjetoFocusLost
+
+    }//GEN-LAST:event_txtProjetoFocusLost
+
+    private void txtProjetoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtProjetoFocusGained
+
+    }//GEN-LAST:event_txtProjetoFocusGained
+
+    private void txtProjetoKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProjetoKeyPressed
+ 
+    }//GEN-LAST:event_txtProjetoKeyPressed
+
+    private void txtAutorKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAutorKeyPressed
+
+    }//GEN-LAST:event_txtAutorKeyPressed
+
+    private void txtAutorKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAutorKeyReleased
+        alterStatusBtnCriarProj();
+    }//GEN-LAST:event_txtAutorKeyReleased
+
+    private void txtProjetoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtProjetoKeyReleased
+        alterStatusBtnCriarProj();
+    }//GEN-LAST:event_txtProjetoKeyReleased
+
+    private void txtFuncionalidadeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFuncionalidadeKeyReleased
+        alterStatusBtnCriarFunc();
+    }//GEN-LAST:event_txtFuncionalidadeKeyReleased
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void intFrmListComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_intFrmListComponentShown
+
+    }//GEN-LAST:event_intFrmListComponentShown
+
+    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
+        loadListProject();
+    }//GEN-LAST:event_formWindowActivated
+
+    private void btnCriarFuncActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriarFuncActionPerformed
+        addNewFeature();
+    }//GEN-LAST:event_btnCriarFuncActionPerformed
+    
+    // Métodos auxiliares
+    private void loadListProject(){
+                
+        ProjectsDao projects = new ProjectsDao();
+        DefaultListModel listModel = new DefaultListModel();
+        listProjetos.setModel(listModel);
+        
+        projects.getAll().forEach((project) -> {
+            listModel.addElement(project.getName());
+        });
+    }
+    
+    private void loadListFeature(){
+                
+        FeaturesDao featuresDao = new FeaturesDao();
+        DefaultListModel listModel = new DefaultListModel();
+        listFunc.setModel(listModel);
+        
+        featuresDao.getAll().forEach((feature) -> {
+            listModel.addElement(feature.getName());
+        });
+    }
+    
+    private void alterStatusBtnCriarProj(){
+        
+        if(!"".equals(txtAutor.getText()) && !"".equals(txtProjeto.getText())){
+            btnCriarProjeto.setEnabled(true);
+        } else {
+            btnCriarProjeto.setEnabled(false);
+        }
+    }
+    
+    private void alterStatusBtnCriarFunc(){
+        
+        String project = listProjetos.getSelectedValue();
+        
+        if(!"".equals(txtFuncionalidade.getText()) && !"".equals(project)){
+            btnCriarFunc.setEnabled(true);
+        } else {
+            btnCriarProjeto.setEnabled(false);
+        }
+    }
+    
+    private void addJlist(JList objList, String item){
+        
+        DefaultListModel listModel = new DefaultListModel();
+        objList.setModel(listModel);
+        listModel.addElement(item);
+    }
+    
+    private void clearProjectFields(){
         
         txtAutor.setText("");
         txtProjeto.setText("");
+        btnCriarProjeto.setEnabled(false);
+    }
+    
+    private void clearFeaturesFields(){
         
-    }//GEN-LAST:event_btnLimparActionPerformed
-
-    private void btnCadastrar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrar2ActionPerformed
+        txtFuncionalidade.setText("");
+        btnCriarFunc.setEnabled(false);
+    }
+    
+    private void addNewProject(){
         
         Projects projects = new Projects();
+        String autor = txtAutor.getText();
+        String projeto = txtProjeto.getText();
         
-        String author = txtAutor.getText();
-        String projectName = txtProjeto.getText();
-        
-        if (!"".equals(author)) {
-            projects.setAuthor(author);
-        } else {
-            JOptionPane.showMessageDialog(null, "O Campo Author deve ser prenchido!");
+        if(!"".equals(autor)){
+           projects.setAuthor(autor);
         }
         
-        if (!"".equals(projectName)) {
-            projects.setName(projectName);
-        } else {
-            JOptionPane.showMessageDialog(null, "O Campo Projeto deve ser prenchido!");
+        if(!"".equals(projeto)){
+            projects.setName(projeto);
         }
         
-        ProjectsDao projectsDao = new ProjectsDao();
-        
-        if (projectsDao.AddProject(projects)){
-            intFormCadastrarProjeto.setVisible(false);
-            //JOptionPane.showMessageDialog(null, "Projeto " + projectName + " foi criado com sucesso! " + projects.getId());  
-            JOptionPane.showMessageDialog(null, "Projeto " + projectName + " foi criado com sucesso!");  
+        if(!"".equals(projects.getAuthor()) && !"".equals(projects.getName())){
+            
+            ProjectsDao projectsDao = new ProjectsDao();
+            
+            if (projectsDao.AddProject(projects)){
+                
+                clearProjectFields();
+                loadListProject();
+                JOptionPane.showMessageDialog(null, "Projeto " + projects.getName() + " criado com sucesso");
+                
+            } else {
+                JOptionPane.showMessageDialog(null, "Ocorreu um erro ao tentar criar o projeto " + projects.getName());
+            }
+            
         } else {
-            JOptionPane.showMessageDialog(null, "Ocorreu um erro ao tentar criar o projeto " + projectName);
-        }
-    }//GEN-LAST:event_btnCadastrar2ActionPerformed
-
-    private void btnNovoProjetoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoProjetoActionPerformed
-
-        if(!intFormCadastrarProjeto.isVisible())
-            intFormCadastrarProjeto.setVisible(true);
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro ao tentar criar o projeto " + projects.getName());
+        } 
+    }
+    
+    private void addNewFeature(){
         
-    }//GEN-LAST:event_btnNovoProjetoActionPerformed
-
+        Projects projects = new Projects();
+        Features features = new Features();
+        
+        String project = listProjetos.getSelectedValue();
+        String feature = txtFuncionalidade.getText();
+        
+        projects.setName(project);
+        ProjectsDao projDao = new ProjectsDao();
+        projDao.getCurrentProjectId(projects);
+        
+        if(!"".equals(project)){
+           features.setProjId(projects.getId());
+        }
+        
+        if(!"".equals(feature)){
+            features.setName(feature);
+        }
+        
+        if(!"".equals(features.getProjId()) && !"".equals(features.getName())){
+            
+            FeaturesDao featureDado = new FeaturesDao();
+            
+            if(featureDado.AddFeature(features)){
+                
+                clearFeaturesFields();
+                loadListFeature();
+//                listProjetos.
+//                listProjetos.getSelectedValue();
+                JOptionPane.showMessageDialog(null, "Projeto " + features.getName() + " criado com sucesso");
+                
+            } else {
+                JOptionPane.showMessageDialog(null, "Ocorreu um erro ao tentar criar o projeto " + projects.getName());
+            }
+            
+        } else {
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro ao tentar criar o projeto " + projects.getName());
+        } 
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -247,18 +611,29 @@ public class ProjectsRegistration extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCadastrar2;
-    private javax.swing.JButton btnLimpar;
+    private javax.swing.JButton btnCriarFunc;
+    private javax.swing.JButton btnCriarProjeto;
+    private javax.swing.JButton btnLimparProjeto;
     private javax.swing.JButton btnNovoProjeto;
-    private javax.swing.JInternalFrame intFormCadastrarProjeto;
+    private javax.swing.JInternalFrame intFrmList;
+    private javax.swing.JButton jButton1;
     private javax.swing.JDesktopPane jDesktopPane1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JList<String> listFunc;
+    private javax.swing.JList<String> listProjetos;
+    private javax.swing.JPanel pnlFuncList;
     private javax.swing.JPanel pnlMenu;
+    private javax.swing.JPanel pnlNovaFuncionalidade;
+    private javax.swing.JPanel pnlNovoProjeto;
+    private javax.swing.JPanel pnlProjList;
+    private javax.swing.JPanel pnlProjetoFunc;
     private javax.swing.JTextField txtAutor;
+    private javax.swing.JTextField txtFuncionalidade;
     private javax.swing.JTextField txtProjeto;
     // End of variables declaration//GEN-END:variables
 }
